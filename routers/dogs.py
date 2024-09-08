@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Annotated
 
 from pydantic import BaseModel, Field
@@ -27,11 +28,31 @@ db_dependency = Annotated[Session, Depends(get_db)]
 owner_dependency = Annotated[dict, Depends(get_current_owner)]
 
 
+class BreedEnum(str, Enum):
+    french_bulldog = 'French Bulldog'
+    labrador_retriever = 'Labrador Retriever'
+    golden_retriever = 'Golden Retriever'
+    german_shepherd = 'German Shepherd'
+    poodle = 'Poodle'
+    dashshund = 'Dachshund'
+    bulldog = 'Bulldog'
+    beagle = 'Beagle'
+    rottweiler = 'Rottweiler'
+    german_shorthaired_pointer = 'German Shorthaired Pointer'
+
+
+class TemperamentEnum(str, Enum):
+    chill = 'Chill'
+    playful = 'Playful'
+    aggressive = 'Aggressive'
+    anxious = 'Anxious'
+
+
 class DogRequest(BaseModel):
     dog_name: str = Field(min_length=3)
-    temperament: str = Field(min_length=3, max_length=100)
+    temperament: TemperamentEnum = Field(default="Chill")
     description: str = Field(min_length=3, max_length=100)
-    breed: str = Field(min_length=3, max_length=100)
+    breed: BreedEnum = Field(default="Poodle")
     age: int = Field(gt=0, lt=35)
 
 
