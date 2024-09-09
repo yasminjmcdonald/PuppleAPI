@@ -1,4 +1,6 @@
 import datetime
+import os
+
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 
@@ -18,7 +20,6 @@ router = APIRouter(
     tags=['auth']
 )
 
-SECRET_KEY = 'dcddb9e1721652a34ad7a065cbb34527198b044470bb173d642e3106400172d0'
 ALGORITHM = 'HS256'
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -64,12 +65,12 @@ def create_access_token(username: str, user_id: int, role: str, expires_delta: t
     encode = {'sub': username, 'id': user_id, 'role': role}
     expires = datetime.now(timezone.utc) + expires_delta
     encode.update({'exp': expires})
-    return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
+    return jwt.encode(encode, os.environ["SECRET_KEY"], algorithm=ALGORITHM)
 
 
 async def get_current_owner(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, os.environ["SECRET_KEY"], algorithms=[ALGORITHM])
         username: str = payload.get('sub')
         user_id: int = payload.get('id')
         user_role: str = payload.get('role')
