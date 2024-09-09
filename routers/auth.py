@@ -84,18 +84,23 @@ async def get_current_owner(token: Annotated[str, Depends(oauth2_bearer)]):
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_owner(db: db_dependency,
                        create_owner_request: CreateOwnerRequest):
-    create_owner_model = Owners(
-        email=create_owner_request.email,
-        username=create_owner_request.username,
-        first_name=create_owner_request.first_name,
-        last_name=create_owner_request.last_name,
-        role=create_owner_request.role,
-        hashed_password=bcrypt_context.hash(create_owner_request.password),
-        is_active=True
-    )
 
-    db.add(create_owner_model)
-    db.commit()
+    owner = db.query(Owners).filter(Owners.username == create_owner_request.username).first()
+    if not owner:
+        create_owner_model = Owners(
+            email=create_owner_request.email,
+            username=create_owner_request.username,
+            first_name=create_owner_request.first_name,
+            last_name=create_owner_request.last_name,
+            role=create_owner_request.role,
+            hashed_password=bcrypt_context.hash(create_owner_request.password),
+            is_active=True
+        )
+
+        db.add(create_owner_model)
+        db.commit()
+    else:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='Username already exists.')
 
 
 @router.post("/token", response_model=Token)
