@@ -83,7 +83,7 @@ async def get_current_owner(token: Annotated[str, Depends(oauth2_bearer)]):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_owner(db: db_dependency,
-                      create_owner_request: CreateOwnerRequest):
+                       create_owner_request: CreateOwnerRequest):
     create_owner_model = Owners(
         email=create_owner_request.email,
         username=create_owner_request.username,
