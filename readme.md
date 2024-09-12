@@ -33,4 +33,4 @@ Execution
 ```
 uvicorn main:app
 ```
-2. In browser, navigate to http://127.0.0.1:8000/docs
+2. In your browser, navigate to http://127.0.0.1:8000/docs
