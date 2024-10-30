@@ -4,8 +4,8 @@ from typing import Annotated
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, Path, APIRouter
-from models import Dogs
-from database import SessionLocal
+from ..models import Dogs
+from ..database import SessionLocal
 from starlette import status
 from .auth import get_current_owner
 
